@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="dm_green_taxi_" database="LogicalDesign" id="LogicalDesign-fcb" >
+	<schema name="dm_green_taxi_" >
+		<table name="dim_calendar" prior="Entity" >
+			<column name="calendar_id" type="BIGINT" jt="-5" mandatory="y" />
+			<column name="year_number" type="INT" jt="4" />
+			<column name="quarter_number" type="INT" jt="4" />
+			<column name="month_number" type="INT" jt="4" />
+			<column name="week_of_month" type="INT" jt="4" />
+			<column name="week_of_year" type="INT" jt="4" />
+			<column name="day_number" type="INT" jt="4" />
+			<column name="hour_number" type="INT" jt="4" />
+			<column name="day_name" type="VARCHAR" length="100" jt="12" />
+			<column name="month_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_calendar" unique="PRIMARY_KEY" >
+				<column name="calendar_id" />
+			</index>
+		</table>
+		<table name="dim_location" prior="Entity" >
+			<column name="location_id" type="INT" jt="4" mandatory="y" />
+			<column name="borough" type="VARCHAR" length="100" jt="12" />
+			<column name="zone_name" type="VARCHAR" length="100" jt="12" />
+			<column name="service_zone" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_location" unique="PRIMARY_KEY" >
+				<column name="location_id" />
+			</index>
+		</table>
+		<table name="dim_payment_type" prior="Entity" >
+			<column name="payment_type_id" type="INT" jt="4" mandatory="y" />
+			<column name="payment_type_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_payment_type" unique="PRIMARY_KEY" >
+				<column name="payment_type_id" />
+			</index>
+		</table>
+		<table name="dim_rate_code" prior="dim_" >
+			<column name="rate_code_id" type="INT" jt="4" mandatory="y" />
+			<column name="reate_code_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_rate_code" unique="PRIMARY_KEY" >
+				<column name="rate_code_id" />
+			</index>
+		</table>
+		<table name="dim_trip_type" prior="dim_" >
+			<column name="trip_type_id" type="INT" jt="4" mandatory="y" />
+			<column name="trip_type_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_trip_type" unique="PRIMARY_KEY" >
+				<column name="trip_type_id" />
+			</index>
+		</table>
+		<table name="dim_vendor" prior="dim" >
+			<column name="vendor_id" type="INT" jt="4" mandatory="y" />
+			<column name="vendor_name" type="VARCHAR" length="100" jt="12" />
+			<index name="pk_dim_vendor" unique="PRIMARY_KEY" >
+				<column name="vendor_id" />
+			</index>
+		</table>
+		<table name="fact_trip" prior="fact_" >
+			<column name="fact_id" type="BIGINT" jt="-5" mandatory="y" />
+			<column name="passenger_count" type="INT" jt="4" />
+			<column name="trip_distance" type="DOUBLE" jt="8" />
+			<column name="fare_amount" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="extra_amount" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="mta_tax" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="tip_amount" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="tolls_amount" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="improvement_surcharge" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="total_amount" type="DECIMAL" length="12" decimal="2" jt="3" />
+			<column name="congestion_surcharge" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="cbd_congestion_fee" type="DECIMAL" length="10" decimal="2" jt="3" />
+			<column name="trip_duration" type="DECIMAL" length="4" decimal="2" jt="3" />
+			<column name="vendor_id" type="INT" jt="4" mandatory="y" />
+			<column name="rate_code_id" type="INT" jt="4" mandatory="y" />
+			<column name="payment_type_id" type="INT" jt="4" mandatory="y" />
+			<column name="trip_type_id" type="INT" jt="4" mandatory="y" />
+			<column name="pickup_location_id" type="INT" jt="4" mandatory="y" />
+			<column name="dropoff_location_id" type="INT" jt="4" mandatory="y" />
+			<column name="pickup_calendar_id" type="BIGINT" jt="-5" mandatory="y" />
+			<column name="dropoff_calendar_id" type="BIGINT" jt="-5" mandatory="y" />
+			<index name="pk_fact_trip" unique="PRIMARY_KEY" >
+				<column name="fact_id" />
+			</index>
+			<fk name="fk_fact_trip_dim_vendor" to_schema="dm_green_taxi_" to_table="dim_vendor" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="vendor_id" pk="vendor_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_trip_type" to_schema="dm_green_taxi_" to_table="dim_trip_type" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="trip_type_id" pk="trip_type_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_payment_type" to_schema="dm_green_taxi_" to_table="dim_payment_type" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="payment_type_id" pk="payment_type_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_rate_code" to_schema="dm_green_taxi_" to_table="dim_rate_code" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="rate_code_id" pk="rate_code_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_location" to_schema="dm_green_taxi_" to_table="dim_location" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="pickup_location_id" pk="location_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_location_0" to_schema="dm_green_taxi_" to_table="dim_location" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="dropoff_location_id" pk="location_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_calendar" to_schema="dm_green_taxi_" to_table="dim_calendar" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="pickup_calendar_id" pk="calendar_id" />
+			</fk>
+			<fk name="fk_fact_trip_dim_calendar_0" to_schema="dm_green_taxi_" to_table="dim_calendar" type="NonIdentifying" mandatory="y" cardinality="OneMore" range_from="0" range_to="0" >
+				<fk_column name="dropoff_calendar_id" pk="calendar_id" />
+			</fk>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout-1bf4" show_relation="name" >
+		<entity schema="dm_green_taxi_" name="dim_calendar" color="C1D8EE" x="102" y="578" />
+		<entity schema="dm_green_taxi_" name="dim_location" color="C1D8EE" x="374" y="51" />
+		<entity schema="dm_green_taxi_" name="dim_payment_type" color="C1D8EE" x="765" y="340" />
+		<entity schema="dm_green_taxi_" name="dim_rate_code" color="C1D8EE" x="782" y="612" />
+		<entity schema="dm_green_taxi_" name="dim_trip_type" color="C1D8EE" x="765" y="102" />
+		<entity schema="dm_green_taxi_" name="dim_vendor" color="C1D8EE" x="51" y="170" />
+		<entity schema="dm_green_taxi_" name="fact_trip" color="C1D8EE" x="357" y="221" />
+	</layout>
+</project>
